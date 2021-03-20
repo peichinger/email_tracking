@@ -1,3 +1,13 @@
+**Info**: Some files in this folder contains changes by Philipp Eichinger (@peichinger)
+
+## Change Overview:
+* ToDo
+
+<br>
+
+*Original README.md:*
+
+
 Consists of an SMTP server, web server, and MySQL database.
 
 ## Prerequisites

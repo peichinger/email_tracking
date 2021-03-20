@@ -1,4 +1,36 @@
-## I never signed up for this! Privacy implications of email tracking
+# Information about this project
+
+## In German:
+
+Bei diesem Repository handelt es sich um einen „fork“ eines Projekts von Herrn Steven Englehardt (@englehardt) welches dieser im Jahr 2018 im Zuge seiner Arbeit „I never signed up for this! Privacy implications of email tracking.“ erstellt hat. Ziel seiner Arbeit war es die Auswirkungen von E-Mail-Tracking auf die Privatsphäre zu untersuchen.
+
+Für meine Bachelorarbeit an der Fachhochschule St. Pölten (Österreich) führe ich eine ähnliche Untersuchung im Deutschsprachigen-Raum durch und baue dabei teilweise auf der Arbeit bzw. dem Projekt von Herrn Englehardt auf.
+
+Dieses Projekt enthält diverse Änderungen im Ordner „mailserver“. Ein Überblick über die Änderungen ist in der README.md Datei im Ordner „mailserver“ zu finden.
+
+Das Projekt hat Anfang Februar 2021 gestartet und ist noch nicht abgeschlossen (Stand Ende März 2021). 
+
+## In English:
+
+This repository is a fork of a project by Mr. Steven Englehardt (@englehardt) which he did in 2018 as part of his research paper “I never signed up for this! Privacy implications of email tracking." The aim of his project was to study the impact of email tracking on privacy.
+
+For my bachelor thesis at the University of Applied Sciences St. Pölten (Austria), I am doing similar research in the German-speaking area, partly building up on Mr. Englehardt's project. 
+
+This project contains various changes in the folder "mailserver". An overview of the changes can be found in the README.md file in the "mailserver" folder.
+
+This project has started in February 2021 and has not yet been completed (status March 2021).
+
+## Contact details:
+* Student mail: is181036@fhstp.ac.at
+* Privat mail: philipp.eichinger98@gmail.com
+* GitHub: @peichinger
+* LinkedIn: Philipp Eichinger
+
+<br>
+
+*Original README.md:*
+
+# I never signed up for this! Privacy implications of email tracking
 
 This is a public code and data release for the research paper "I never signed
 up for this! Privacy implications of email tracking.", which will appear at

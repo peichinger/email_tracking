@@ -59,7 +59,7 @@ public class MailStorage {
 
 		// write contents to file
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
-			writer.write(stripAttachments(data));
+			writer.write(stripAttachments(data));   //PE-ToDo: Möcht ich das? -> Entfernt Bilder
 		} catch (IOException e) {
 			logger.error("Failed to write email to disk.", e);
 		}

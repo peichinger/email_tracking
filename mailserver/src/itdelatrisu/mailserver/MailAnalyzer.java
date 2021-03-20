@@ -1,3 +1,5 @@
+// Info: File contains changes by Philipp Eichinger (@peichinger)
+
 package itdelatrisu.mailserver;
 
 import java.io.IOException;
@@ -123,7 +125,7 @@ public class MailAnalyzer {
 	}
 
 	/** Shuts down the executor service. */
-	public void shutdown() { pool.shutdown(); }
+	public void shutdown() { pool.shutdown(); }   //PE-ToDo: ?
 
 	/** Analyzes the mail. */
 	public void analyze(String from, MailDB.MailUser user, String data) {
@@ -146,9 +148,9 @@ public class MailAnalyzer {
 
 		// is this the first email?
 		if (user.getReceivedEmailCount() == 0)
-			findConfirmationLinksToVisit(message, extractor, from, user.getId(), user.getRegistrationSiteDomain());
+			findConfirmationLinksToVisit(message, extractor, from, user.getId(), user.getRegistrationSiteDomain());  //PE-ToDo: Will ich das?
 
-		if (html == null)
+		if (html == null) //PE-ToDo: Diese info in der Datenbank abspeichern
 			return;  // no HTML, skip everything else
 
 		// find leaked email addresses
@@ -196,6 +198,8 @@ public class MailAnalyzer {
 		List<HashChecker.NamedValue<String>> encodings
 	) {
 		try {
+			// PE-ToDo: Gefällt mir der Ansatz?
+
 			// make requests for:
 			// - images explicitly labeled as 1x1
 			// - URLs containing the recipient email address (raw or encoded)

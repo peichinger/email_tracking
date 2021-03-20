@@ -1,3 +1,5 @@
+// Info: File contains changes by Philipp Eichinger (@peichinger)
+
 package itdelatrisu.mailserver;
 
 import java.io.IOException;
@@ -23,8 +25,9 @@ public class MailServer extends SMTPServer {
 
 		@Override
 		public boolean accept(String from, String recipient) {
-			logger.info("ACCEPT: {} -> {}", from, recipient);
-			return handler.accept(from, recipient);
+			boolean help = handler.accept(from, recipient);
+			help ? logger.info("ACCEPT: {} -> {}", from, recipient) : logger.info("REJECT: {} -> {}", from, recipient);
+			return help;
 		}
 
 		@Override
@@ -32,7 +35,7 @@ public class MailServer extends SMTPServer {
 			throws TooMuchDataException, IOException {
 			String content = Utils.streamToString(data);
 			logger.info("DELIVER: {} -> {}", from, recipient);
-			handler.handleMessage(from, recipient, content);
+			handler.handleMessage(from, recipient, content); //PE-ToDo: Info Mail erfolgreich zugestellt/analysiert oder nicht
 		}
 	}
 

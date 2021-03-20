@@ -1,3 +1,5 @@
+// Info: File contains changes by Philipp Eichinger (@peichinger)
+
 package itdelatrisu.mailserver;
 
 import org.slf4j.Logger;
@@ -8,7 +10,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Launcher {
 	private static final Logger logger = LoggerFactory.getLogger(Launcher.class);
-	private static final String DOMAIN_NAME = "lorveskel.me";
+	private static final String DOMAIN_NAME = "eichinger-edv.at"; //"lorveskel.me";
 
 	public static void main(String[] args) {
 		String domain = DOMAIN_NAME;
@@ -16,10 +18,12 @@ public class Launcher {
 
 		// get mail database instance
 		MailDB db = new MailDB(
-			"com.mysql.jdbc.Driver",
-			"jdbc:mysql://localhost:3306/mail",
+			//"com.mysql.jdbc.Driver",
+			"org.mariadb.jdbc.Driver",
+			//"jdbc:mysql://localhost:3306/mail",
+			"jdbc:mariadb://localhost:3306/mail",
 			"mailserver",
-			"S6TTAykTfAEMJjqN"
+			"S6TTAykTfAEMJjqN"  //PE: Change PW in the productive environment
 		);
 
 		// start mail server

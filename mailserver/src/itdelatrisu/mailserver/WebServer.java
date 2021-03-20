@@ -1,3 +1,5 @@
+// Info: File contains changes by Philipp Eichinger (@peichinger)
+
 package itdelatrisu.mailserver;
 
 import java.io.IOException;
@@ -58,8 +60,9 @@ public class WebServer {
 	/** Starts the server. */
 	public void start() {
 		Spark.post("/register", this::register);
-		Spark.get("/visit", this::visit);
-		Spark.post("/results", this::results);
+		//PE-ToDo:
+		//Spark.get("/visit", this::visit);
+		//Spark.post("/results", this::results);
 	}
 
 	/** Stops the server. */
@@ -80,6 +83,8 @@ public class WebServer {
 			return badRequest(response);
 
 		logger.info("/register: {} - {}", site, url);
+
+		// PE-ToDo: 2 E-Mail-Adressen (User) je regestrierung anlegen
 
 		// generate an email address
 		int retries = 3;  // in case generator picks a duplicate

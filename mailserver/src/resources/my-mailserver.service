@@ -1,0 +1,20 @@
+[Unit]
+Description=My E-Mail Server Service
+[Service]
+User=mailserver
+# The configuration file application.properties should be here:
+
+#change this to your workspace
+WorkingDirectory=/home/mailserver/EmailTracking/mailserver
+
+#path to executable. 
+#executable is a bash script which calls jar file
+ExecStart=/home/mailserver/EmailTracking/my-mailserver.bash
+
+SuccessExitStatus=143
+TimeoutStopSec=10
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

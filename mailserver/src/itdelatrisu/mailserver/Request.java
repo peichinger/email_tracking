@@ -93,7 +93,7 @@ public class Request {
 		URL requestURL = url;
 		int redirectCount = 0;
 		while (true) {
-			// set connection properties
+			// set connection properties  // PE-ToDo: An DAC Raum anpassen
 			HttpURLConnection conn = (HttpURLConnection) requestURL.openConnection();
 			conn.setConnectTimeout(CONNECTION_TIMEOUT);
 			conn.setReadTimeout(READ_TIMEOUT);

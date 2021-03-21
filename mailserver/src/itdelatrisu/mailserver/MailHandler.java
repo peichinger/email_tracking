@@ -1,3 +1,5 @@
+// Info: File contains changes by Philipp Eichinger (@peichinger)
+
 package itdelatrisu.mailserver;
 
 import java.sql.SQLException;
@@ -57,6 +59,6 @@ public class MailHandler {
 		storage.store(from, user, data);
 
 		// analyze mail
-		analyzer.analyze(from, user, data);
+		//analyzer.analyze(from, user, data);  //PE-ToDo: Vorübergehend deaktiviert
 	}
 }

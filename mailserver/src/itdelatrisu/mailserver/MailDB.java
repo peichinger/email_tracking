@@ -1,3 +1,5 @@
+// Info: File contains changes by Philipp Eichinger (@peichinger)
+
 package itdelatrisu.mailserver;
 
 import java.net.URL;
@@ -32,24 +34,27 @@ public class MailDB {
 	/** The organization domains manager. */
 	private final OrganizationDomains orgs;
 
-	/** Represents a mail user. */
+	/** Represents a email user. */
 	public class MailUser {
-		private final int id, emailCount, leakCount, tpLeakCount;
-		private final String email, site, url, urlDomain;
+		private final int id, emailCount, emailCount2, leakCount, tpLeakCount;
+		private final String email, email2, site, url, urlDomain, category;
 		private final Date ts;
 
 		/** Constructor. */
 		public MailUser(
-			int id, String email, String site, String url, String urlDomain, Date ts,
-			int emailCount, int leakCount, int tpLeakCount
+			int id, String email, String email2, String site, String url, String urlDomain, String category, Date ts,
+			int emailCount, int emailCount2, int leakCount, int tpLeakCount
 		) {
 			this.id = id;
 			this.email = email;
+			this.email2 = email2;
 			this.site = site;
 			this.url = url;
 			this.urlDomain = urlDomain;
+			this.category = category;
 			this.ts = ts;
 			this.emailCount = emailCount;
+			this.emailCount2 = emailCount2;
 			this.leakCount = leakCount;
 			this.tpLeakCount = tpLeakCount;
 		}
@@ -60,6 +65,9 @@ public class MailDB {
 		/** Returns the unique email address. */
 		public String getEmail() { return email; }
 
+		/** PE: Returns the unique secondary email address. */
+		public String getEmail2() { return email2; }
+
 		/** Returns the registration site title. */
 		public String getRegistrationSiteTitle() { return site; }
 
@@ -69,11 +77,17 @@ public class MailDB {
 		/** Returns the registration site domain. */
 		public String getRegistrationSiteDomain() { return urlDomain; }
 
+		/** PE: Returns the category of the registration site */
+		public String getRegistrationSiteCategory() { return category; }
+
 		/** Returns the registration date. */
 		public Date getRegistrationDate() { return ts; }
 
 		/** Returns the number of emails this user received (may be out of date). */
 		public int getReceivedEmailCount() { return emailCount; }
+
+		/** PE: Returns the number of secondary emails this user received (may be out of date). */
+		public int getReceivedEmailCount2() { return emailCount2; }
 
 		/** Returns the number of times the user's email address was leaked (may be out of date). */
 		public int getLeakCount() { return leakCount; }
@@ -83,6 +97,7 @@ public class MailDB {
 	}
 
 	/** Represents a link group. */
+	// PE: Not in use
 	public class LinkGroup {
 		private final int id;
 		private final String senderDomain, senderAddress;
@@ -139,36 +154,53 @@ public class MailDB {
 		return url.substring(0, MAX_URL_LENGTH - marker.length()) + marker;
 	}
 
-	/** Adds a mail entry to the database. */
+	/** Adds a email entry to the database. */
 	public void addMailEntry(
+		String into_table,
 		String recipient,
 		String sender,
 		Date sentDate,
 		String subject,
-		String filename
+		String filename,
+		String format
 	) throws SQLException {
+		if
+
 		try (
 			Connection connection = getConnection();
 			PreparedStatement stmt = connection.prepareStatement(
-				"INSERT INTO `inbox` VALUES(?, ?, ?, ?, ?)"
+				"INSERT INTO `?` VALUES(?, ?, ?, ?, ?, ?, ?)"
 			);
 			PreparedStatement stmtUpdate = connection.prepareStatement(
-				"UPDATE `users` SET `emails_received` = `emails_received` + 1 WHERE `email` = ?"
+				"UPDATE `users` SET `?` = `?` + 1 WHERE `?` = ?"
 			);
 		) {
-			stmt.setString(1, recipient);
-			stmt.setString(2, sender);
-			stmt.setTimestamp(3, sentDate == null ? null : new Timestamp(sentDate.getTime()));
-			stmt.setString(4, subject);
-			stmt.setString(5, filename);
+			stmt.setString(1, into_table);
+			stmt.setString(2, recipient);
+			stmt.setString(3, sender);
+			stmt.setTimestamp(4, sentDate == null ? null : new Timestamp(sentDate.getTime()));
+			stmt.setString(5, subject);
+			stmt.setString(6, filename);
+			stmt.setString(7, format);
+			stmt.setString(8, "");
 			stmt.executeUpdate();
 
-			stmtUpdate.setString(1, recipient);
+			if(into_table.equals("inbox")){
+				stmtUpdate.setString(1, "emails_received");
+				stmtUpdate.setString(2, "emails_received");
+				stmtUpdate.setString(3, "email");
+			}else{
+				stmtUpdate.setString(1, "emails_received2");
+				stmtUpdate.setString(2, "emails_received2");
+				stmtUpdate.setString(3, "email2");
+			}
+			stmtUpdate.setString(4, recipient);
 			stmtUpdate.executeUpdate();
 		}
 	}
 
 	/** Adds a redirect chain to the database. */
+	// PE: Not in use
 	public synchronized void addRedirects(
 		Request req,
 		String senderDomain,
@@ -263,22 +295,24 @@ public class MailDB {
 		}
 	}
 
-	/** Adds a mail user to the database, and returns false if the user already existed. */
-	public boolean addMailUser(String email, String site, String url) throws SQLException {
+	/** Adds a email user to the database, and returns false if the user already existed. */
+	public boolean addMailUser(String email, String email2, String site, String url, String category) throws SQLException {
 		try (
 			Connection connection = getConnection();
 			PreparedStatement stmt = connection.prepareStatement(
-				"INSERT IGNORE INTO `users` (`email`, `register_site`, `register_url`, `register_domain`) VALUES(?, ?, ?, ?)"
+				"INSERT IGNORE INTO `users` (`email`, `email2`, `register_site`, `register_url`, `register_domain`, `register_category`) VALUES(?, ?, ?, ?, ?, ?)"
 			);
 		) {
 			stmt.setString(1, email);
-			stmt.setString(2, site);
-			stmt.setString(3, truncateUrl(url));
+			stmt.setString(2, email2)
+			stmt.setString(3, site);
+			stmt.setString(4, truncateUrl(url));
 			try {
-				stmt.setString(4, Utils.getDomainName(url));
+				stmt.setString(5, Utils.getDomainName(url));
 			} catch (Exception e) {
-				stmt.setString(4, "");
+				stmt.setString(5, "");
 			}
+			stmt.setString(6, category);
 			int rows = stmt.executeUpdate();
 			return rows > 0;
 		}
@@ -289,10 +323,11 @@ public class MailDB {
 		try (
 			Connection connection = getConnection();
 			PreparedStatement stmt = connection.prepareStatement(
-				"SELECT EXISTS(SELECT 1 FROM `users` WHERE `email` = ?)"
+				"SELECT EXISTS(SELECT 1 FROM `users` WHERE `email` = ? OR `email2` = ?)"
 			);
 		) {
 			stmt.setString(1, email);
+			stmt.setString(2, email);
 			stmt.executeQuery();
 			try (ResultSet rs = stmt.executeQuery()) {
 				return rs.next() ? rs.getBoolean(1) : false;
@@ -305,14 +340,15 @@ public class MailDB {
 		try (
 			Connection connection = getConnection();
 			PreparedStatement stmt = connection.prepareStatement(
-				"SELECT `id`, `register_site`, `register_url`, `register_domain`, `register_time`, `emails_received`, `leak_count`, `tp_leak_count` FROM `users` WHERE `email` = ?"
+				"SELECT `id`, `email`, `email2`, `register_site`, `register_url`, `register_domain`, `register_category`, `register_time`, `emails_received`, `emails_received2`, `leak_count`, `tp_leak_count` FROM `users` WHERE `email` = ? OR `email2` = ?"
 			);
 		) {
 			stmt.setString(1, email);
+			stmt.setString(2, email);
 			stmt.executeQuery();
 			try (ResultSet rs = stmt.executeQuery()) {
 				return (!rs.next()) ? null :
-					new MailUser(rs.getInt(1), email, rs.getString(2), rs.getString(3), rs.getString(4), rs.getTimestamp(5), rs.getInt(6), rs.getInt(7), rs.getInt(8));
+					new MailUser(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getTimestamp(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12));
 			}
 		}
 	}
@@ -322,14 +358,14 @@ public class MailDB {
 		try (
 			Connection connection = getConnection();
 			PreparedStatement stmt = connection.prepareStatement(
-				"SELECT `email`, `register_site`, `register_url`, `register_domain`, `register_time`, `emails_received`, `leak_count`, `tp_leak_count` FROM `users` WHERE `id` = ?"
+				"SELECT `email`, `email2`, `register_site`, `register_url`, `register_domain`, `register_category`, `register_time`, `emails_received`, `emails_received2`, `leak_count`, `tp_leak_count` FROM `users` WHERE `id` = ?"
 			);
 		) {
 			stmt.setInt(1, id);
 			stmt.executeQuery();
 			try (ResultSet rs = stmt.executeQuery()) {
 				return (!rs.next()) ? null :
-					new MailUser(id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getTimestamp(5), rs.getInt(6), rs.getInt(7), rs.getInt(8));
+					new MailUser(id, rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getTimestamp(7), rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11));
 			}
 		}
 	}
@@ -340,17 +376,18 @@ public class MailDB {
 			Connection connection = getConnection();
 			Statement stmt = connection.createStatement();
 		) {
-			String sql = "SELECT `id`, `email`, `register_site`, `register_url`, `register_domain`, `register_time`, `emails_received`, `leak_count`, `tp_leak_count` FROM `users`";
+			String sql = "SELECT `id`, `email`, `email2`, `register_site`, `register_url`, `register_domain`, `register_category`, `register_time`, `emails_received`, `emails_received2`, `leak_count`, `tp_leak_count` FROM `users`";
 			List<MailUser> users = new ArrayList<MailUser>();
 			try (ResultSet rs = stmt.executeQuery(sql)) {
 				while (rs.next())
-					users.add(new MailUser(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getTimestamp(6), rs.getInt(7), rs.getInt(8), rs.getInt(9)));
+					users.add(new MailUser(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getTimestamp(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getInt(12)));
 			}
 			return users;
 		}
 	}
 
 	/** Adds a group of links to the database. */
+	// PE: Not in use
 	public void addLinkGroup(
 		List<String> urls,
 		String senderDomain,
@@ -372,6 +409,7 @@ public class MailDB {
 	}
 
 	/** Retrieves a random group of links from the database, or null if none exists. */
+	// PE: Not in use
 	public LinkGroup getLinkGroup() throws SQLException {
 		try (
 			Connection connection = getConnection();
@@ -388,6 +426,7 @@ public class MailDB {
 	}
 
 	/** Retrieves link group data for the given ID from the database, or null if it does not exist. */
+	// PE: Not in use
 	public LinkGroup getLinkGroup(int id) throws SQLException {
 		try (
 			Connection connection = getConnection();
@@ -407,6 +446,7 @@ public class MailDB {
 	}
 
 	/** Removes link group data for the given ID from the database. */
+	// PE: Not in use
 	public void removeLinkGroup(int id) throws SQLException {
 		try (
 			Connection connection = getConnection();

@@ -26,7 +26,12 @@ public class MailServer extends SMTPServer {
 		@Override
 		public boolean accept(String from, String recipient) {
 			boolean help = handler.accept(from, recipient);
-			help ? logger.info("ACCEPT: {} -> {}", from, recipient) : logger.info("REJECT: {} -> {}", from, recipient);
+			
+			if (help){
+				logger.info("ACCEPT: {} -> {}", from, recipient);
+			} else{
+				logger.info("REJECT: {} -> {}", from, recipient);
+			}
 			return help;
 		}
 
@@ -34,8 +39,8 @@ public class MailServer extends SMTPServer {
 		public void deliver(String from, String recipient, InputStream data)
 			throws TooMuchDataException, IOException {
 			String content = Utils.streamToString(data);
-			logger.info("DELIVER: {} -> {}", from, recipient);
-			handler.handleMessage(from, recipient, content); //PE-ToDo: Info Mail erfolgreich zugestellt/analysiert oder nicht
+			//logger.info("Try to DELIVER: {} -> {}", from, recipient); //PE: This log entry is created by the MailHandler instead
+			handler.handleMessage(from, recipient, content);
 		}
 	}
 

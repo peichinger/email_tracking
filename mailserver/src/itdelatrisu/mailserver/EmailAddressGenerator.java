@@ -1,3 +1,5 @@
+// Info: File contains changes by Philipp Eichinger (@peichinger)
+
 package itdelatrisu.mailserver;
 
 import java.io.BufferedReader;
@@ -20,9 +22,11 @@ public class EmailAddressGenerator {
 	private final List<String> firstNames, surnames;
 
 	/** Initializes the generator. */
+	// PE: first_names_at.txt - The 60 most common female and male first names of newborns in Austria in 2019
+	// PE: surnames_at.txt - The 50 most common family names in Austria
 	public EmailAddressGenerator() {
-		this.firstNames = loadNames("census_1990_first_names.txt");
-		this.surnames = loadNames("census_2010_surnames.txt");
+		this.firstNames = loadNames("first_names_at.txt");
+		this.surnames = loadNames("surnames_at.txt");
 	}
 
 	/** Loads names line-by-line from the given resource file. */
@@ -54,6 +58,7 @@ public class EmailAddressGenerator {
 		StringBuilder sb = new StringBuilder();
 //		sb.append(java.util.UUID.randomUUID().toString().replaceAll("-", ""));
 		sb.append(random(firstNames));
+		sb.append(".");
 		sb.append(random(surnames));
 		sb.append((int) (Math.random() * 1000));
 		sb.append('@');

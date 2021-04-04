@@ -37,7 +37,7 @@ public class WebServer {
 	/** The email address generator. */
 	private final EmailAddressGenerator generator;
 
-	/** The mail server's domain name. */
+	/** The email server's domain name. */
 	private final String domain;
 
 	/** The port. */
@@ -60,7 +60,7 @@ public class WebServer {
 	/** Starts the server. */
 	public void start() {
 		Spark.post("/register", this::register);
-		//PE-ToDo:
+		//PE: Disabled
 		//Spark.get("/visit", this::visit);
 		//Spark.post("/results", this::results);
 	}
@@ -73,27 +73,43 @@ public class WebServer {
 
 	/**
 	 * Registers for a site, creating and returning a new email address.
-	 * POST /register : site, url -> email
+	 * POST /register : site, url, category -> email
 	 */
 	private String register(spark.Request request, spark.Response response) {
+		StringBuilder email1 = new StringBuilder();;
+		StringBuilder email2 = new StringBuilder();;
+
 		// parse request data
 		QueryParamsMap map = request.queryMap();
-		String site = map.value("site"), url = map.value("url");
-		if (site == null || url == null)
+		String site = map.value("site"), url = map.value("url"), category = map.value("category");
+		if (site == null || url == null || category == null || category == "")
 			return badRequest(response);
 
-		logger.info("/register: {} - {}", site, url);
+		logger.info("/register: {} - {} - {}", site, url, category);
 
-		// PE-ToDo: 2 E-Mail-Adressen (User) je regestrierung anlegen
-
-		// generate an email address
-		int retries = 3;  // in case generator picks a duplicate
+		// generate 2 email addresses
+		int retries = 5;  // in case generator picks a duplicate
 		while (retries-- > 0) {
-			String email = generator.generate(domain);
+			String email = generator.generate(domain)
+			
+			// PE: Email 1
+			email1.setLength(0);
+			email1.append(category.substring(0,1));
+			email1.append(".");
+			email1.append(email);
+
+			//PE: Email 2
+			email2.setLength(0);
+			email2.append(category.substring(0,1));
+			email2.append("2.");
+			email2.append(email);
+
 			try {
-				if (db.addMailUser(email, site, url)) {
-					logger.info("Created new user {}.", email);
-					return email;
+				if (db.addMailUser(email1.toString(), email2.toString(), site, url, category)) {
+					email1.append(";")
+					email1.append(email2.toString());
+					logger.info("Created new user: {}", email1.toString());
+					return email1.toString();
 				}
 			} catch (SQLException e) {
 				logger.error("Failed to create new user.", e);
@@ -107,6 +123,7 @@ public class WebServer {
 	 * Retrieves a group of URLs to visit.
 	 * GET /visit -> {id: int, links: [string...]}
 	 */
+	/* PE: Not in use
 	private String visit(spark.Request request, spark.Response response) {
 		// get a random link group
 		MailDB.LinkGroup linkGroup;
@@ -129,12 +146,13 @@ public class WebServer {
 		json.put("links", new JSONArray(linkGroup.getUrls()));
 		response.type("application/json");
 		return json.toString();
-	}
+	}*/
 
 	/**
 	 * Submits all requests generated from a group of URLs (from {@link #visit(spark.Request, spark.Response)}).
 	 * POST /results : {id: int, requests: [[url, topLevelUrl, referrer, postBody], []...]}
 	 */
+	/* PE: Not in use
 	private String results(spark.Request request, spark.Response response) {
 		if (request.body().isEmpty())
 			return badRequest(response);
@@ -218,9 +236,10 @@ public class WebServer {
 		}
 
 		return "";
-	}
+	}*/
 
 	/** Finds leaked email addresses in the given data. */
+	/* PE: Not in use
 	private void findLeakedEmailAddress(
 		String url,
 		String topLevelUrl,
@@ -285,9 +304,10 @@ public class WebServer {
 				senderDomain, senderAddress, recipientId
 			);
 		}
-	}
+	}*/
 
 	/** Returns whether the URL contains the given string. */
+	/* PE: Not in use
 	private boolean urlContainsString(String url, String s) {
 		if (url == null || url.isEmpty())
 			return false;
@@ -302,9 +322,10 @@ public class WebServer {
 		} catch (Exception e) {}
 
 		return false;
-	}
+	}*/
 
 	/** Returns whether the value is present in the given string more frequently than the URL. */
+	/* PE: Not in use
 	private boolean isValueMoreFrequentThanUrlsInString(String value, String url, String s) {
 		if (url == null || url.isEmpty())
 			return true;
@@ -317,7 +338,7 @@ public class WebServer {
 		} catch (Exception e) {}
 
 		return replaced.contains(value);
-	}
+	}*/
 
 	/** Returns a 400 Bad Request response. */
 	private String badRequest(spark.Response response) {

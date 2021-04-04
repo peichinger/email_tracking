@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Handler for incoming mail.
+ * Handler for incoming email.
  */
 public class MailHandler {
 	private static final Logger logger = LoggerFactory.getLogger(MailHandler.class);
@@ -42,6 +42,9 @@ public class MailHandler {
 
 	/** Handles the message. */
 	public void handleMessage(String from, String recipient, String data) {
+		boolean success = false;
+		boolean recipient_is_email1 = false;
+
 		// get user info
 		MailDB.MailUser user;
 		try {
@@ -55,10 +58,21 @@ public class MailHandler {
 			return;
 		}
 
-		// store mail on disk
-		storage.store(from, user, data);
+		// PE: Check whether the recipient is a secondary email address or not
+		// PE: -> Emails to a secondary email address are stored differently and are not analyzed
+		if (user.getEmail().equals(recipient)){
+			recipient_is_email1 = true;
+		}
 
-		// analyze mail
-		//analyzer.analyze(from, user, data);  //PE-ToDo: Vorübergehend deaktiviert
+		// store email on disk
+		success = storage.store(from, user, data, recipient, recipient_is_email1);
+		if(success){
+			logger.info("Mail saved successfully ({} -> {})", from, recipient);
+		}
+
+		// PE: Analyze email (emails to secondary email addresses are not analyzed)
+		if(recipient_is_email1){
+			analyzer.analyze(from, user, data);
+		}
 	}
 }

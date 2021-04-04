@@ -26,52 +26,55 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Analyzer for incoming mail.
+ * Analyzer for incoming email.
  */
 public class MailAnalyzer {
 	private static final Logger logger = LoggerFactory.getLogger(MailAnalyzer.class);
 
-	/** Size of the thread pool for executing requests. */
+	/* PE: Not in use
+	// Size of the thread pool for executing requests.
 	private static final int MAX_REQUEST_THREADS = 5;
 
-	/** Delay (in ms) before scheduling a task. */
+	// Delay (in ms) before scheduling a task.
 	private static final int TASK_SCHEDULE_DELAY = 1000;
 
-	/** Keywords for email confirmation. */
+	// Keywords for email confirmation.
 	private static final String[] EMAIL_CONFIRMATION_KEYWORDS = new String[] {
 		"confirm", "verify", "validate", "activate"
 	};
 
-	/** Additional keywords in link text for email confirmation. */
+	// Additional keywords in link text for email confirmation.
 	private static final String[] EMAIL_CONFIRMATION_LINK_KEYWORDS = new String[] {
 		"subscribe", "click"
 	};
 
-	/** Blacklisted keywords in link text for email confirmation. */
+	// Blacklisted keywords in link text for email confirmation.
 	private static final String[] EMAIL_CONFIRMATION_LINK_BLACKLIST = new String[] {
 		"unsubscribe", "view", "cancel", "deactivate"
 	};
 
-	/** Blacklisted keywords in link URLs for email confirmation. */
+	// Blacklisted keywords in link URLs for email confirmation.
 	private static final String[] EMAIL_CONFIRMATION_LINK_URL_BLACKLIST = new String[] {
 		"unsubscribe", "deactivate"
 	};
 
-	/** Blacklisted keywords in email subject for email confirmation. */
+	// Blacklisted keywords in email subject for email confirmation.
 	private static final String[] EMAIL_CONFIRMATION_SUBJECT_BLACKLIST = new String[] {
 		"confirmed", "subscribed", "activated"
-	};
+	}; */
 
 	/** The database instance. */
 	private final MailDB db;
 
-	/** The thread pool for executing requests. */
+	/* PE: Not in use
+	// The thread pool for executing requests.
 	private final ScheduledExecutorService pool;
 
-	/** The random number generator instance. */
-	private final Random random;
+	//The random number generator instance.
+	private final Random random;*/
 
 	/** Task for making requests to a URL. */
+	/* PE: Not in use
 	private class RequestTask implements Callable<Request> {
 		private final Request req;
 		private final String urlType;
@@ -79,7 +82,7 @@ public class MailAnalyzer {
 		private final int recipientId;
 		private final List<HashChecker.NamedValue<String>> encodings;
 
-		/** Creates a new request task to request the given URL. */
+		// Creates a new request task to request the given URL.
 		public RequestTask(
 			String url,
 			String type,
@@ -115,25 +118,25 @@ public class MailAnalyzer {
 				throw e;
 			}
 		}
-	}
+	} */
 
 	/** Initializes the analyzer module. */
 	public MailAnalyzer(MailDB db) {
 		this.db = db;
-		this.pool = Executors.newScheduledThreadPool(MAX_REQUEST_THREADS);
-		this.random = new Random();
+		//this.pool = Executors.newScheduledThreadPool(MAX_REQUEST_THREADS);
+		//this.random = new Random();
 	}
 
 	/** Shuts down the executor service. */
-	public void shutdown() { pool.shutdown(); }   //PE-ToDo: ?
+	//public void shutdown() { pool.shutdown(); }
 
-	/** Analyzes the mail. */
+	/** Analyzes the email. */
 	public void analyze(String from, MailDB.MailUser user, String data) {
 		if (user.getRegistrationSiteDomain() == null || user.getRegistrationSiteDomain().isEmpty())
 			return;
 
 		// extract HTML from the email
-		MimeMessage message;
+		MimeMessage message;  
 		String html;
 		LinkExtractor extractor = null;
 		try {
@@ -146,11 +149,13 @@ public class MailAnalyzer {
 			return;
 		}
 
-		// is this the first email?
-		if (user.getReceivedEmailCount() == 0)
-			findConfirmationLinksToVisit(message, extractor, from, user.getId(), user.getRegistrationSiteDomain());  //PE-ToDo: Will ich das?
+		/* PE: Automatic email confirmation disabled
+		// is this the first email?  
+		//if (user.getReceivedEmailCount() == 0)
+		//	findConfirmationLinksToVisit(message, extractor, from, user.getId(), user.getRegistrationSiteDomain());
+		*/
 
-		if (html == null) //PE-ToDo: Diese info in der Datenbank abspeichern
+		if (html == null)
 			return;  // no HTML, skip everything else
 
 		// find leaked email addresses
@@ -158,11 +163,13 @@ public class MailAnalyzer {
 		for (LinkExtractor.Link link : extractor.getAllLinks())
 			findLeakedEmailAddress(link.url, link.type.toString(), encodings, false, user.getId(), user.getRegistrationSiteDomain(), from);
 
-		// request tracking images
+		/* PE: Disabled
+		// request tracking images -> find redirects
 		requestTrackingImages(extractor, from, user.getId(), user.getRegistrationSiteDomain(), encodings);
 
-		// record links to visit
+		// record links to visit -> addLinkGroup() -> table link_groups -> WebServer
 		recordLinksToVisit(extractor, from, user.getId(), user.getRegistrationSiteDomain(), encodings);
+		*/
 	}
 
 	/** Finds leaked email addresses in the given URL. */
@@ -190,6 +197,7 @@ public class MailAnalyzer {
 	}
 
 	/** Makes requests for tracking images present in the message. */
+	/* PE: Disabled
 	private void requestTrackingImages(
 		LinkExtractor extractor,
 		String from,
@@ -198,7 +206,7 @@ public class MailAnalyzer {
 		List<HashChecker.NamedValue<String>> encodings
 	) {
 		try {
-			// PE-ToDo: Gefällt mir der Ansatz?
+			// PE-ToDo: Do I like the approach?
 
 			// make requests for:
 			// - images explicitly labeled as 1x1
@@ -254,9 +262,10 @@ public class MailAnalyzer {
 		} catch (Exception e) {
 			logger.error("Failed to request tracking images.", e);
 		}
-	}
+	} */
 
 	/** Records a group of links in the message to be visited. */
+	/* PE: Disabled
 	private void recordLinksToVisit(
 		LinkExtractor extractor,
 		String from,
@@ -338,9 +347,10 @@ public class MailAnalyzer {
 		} catch (SQLException e) {
 			logger.error("Failed to record links to visit.", e);
 		}
-	}
+	}*/
 
 	/** Returns a map of the URLs grouped by prefix: prefix -> list(URLs). */
+	/* PE: Disabled
 	private Map<String, List<String>> groupByPrefix(List<LinkExtractor.InlineLink> links) {
 		// match prefixes by (in order of preference):
 		// - the first "/?" sequence
@@ -371,9 +381,10 @@ public class MailAnalyzer {
 			list.add(url);
 		}
 		return map;
-	}
+	}*/
 
 	/** Finds email confirmation links to visit. */
+	/* PE: Disabled
 	private void findConfirmationLinksToVisit(
 		MimeMessage message,
 		LinkExtractor extractor,
@@ -460,14 +471,15 @@ public class MailAnalyzer {
 		} catch (SQLException e) {
 			logger.error("Failed to record email confirmation link to visit.", e);
 		}
-	}
+	}*/
 
 	/** Returns whether the given string matches any given keyword. */
+	/* PE: Disabled
 	private boolean matches(String s, String[] keywords) {
 		for (String keyword : keywords) {
 			if (s.contains(keyword))
 				return true;
 		}
 		return false;
-	}
+	}*/
 }

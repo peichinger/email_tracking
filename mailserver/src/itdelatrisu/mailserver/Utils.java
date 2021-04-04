@@ -78,7 +78,7 @@ public class Utils {
 		return Resources.toString(Resources.getResource(res), encoding);
 	}
 
-	/** Parses mail data into a MimeMessage. */
+	/** Parses email data into a MimeMessage. */
 	public static MimeMessage toMimeMessage(String content) throws MessagingException {
 		Session s = Session.getDefaultInstance(new Properties());
 		InputStream is = new ByteArrayInputStream(content.getBytes());

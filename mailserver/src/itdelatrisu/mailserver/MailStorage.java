@@ -61,20 +61,20 @@ public class MailStorage {
 	public boolean store(String from, MailDB.MailUser user, String data, boolean recipient_is_email1) {
 		boolean success = false;
 		File mailDirX;
-		String table;
+		String email;
 		
 		// PE: Check whether the recipient is a secondary email address or not
 		// PE: -> Emails to a secondary email address are stored in a different directory and table 
 		if(recipient_is_email1){
 			mailDirX = mailDir;
-			table = "inbox";
+			email = user.getEmail();
 		} else{
 			mailDirX = mailDir2;
-			table = "inbox2";
+			email = user.getEmail2();
 		}
 
 		// {root_mail_dir}/{email}/{timestamp}.eml
-		File dir = new File(mailDirX, Utils.cleanFileName(user.getEmail(), '_'));
+		File dir = new File(mailDirX, Utils.cleanFileName(email, '_'));
 		if (!dir.isDirectory() && !dir.mkdirs()) {
 			logger.error("Failed to create mail directory '{}'.", dir.getAbsolutePath());
 			dir = mailDirX;
@@ -107,12 +107,16 @@ public class MailStorage {
 			}else {
 				format = "html";
 			}
-		} catch (MessagingException e) {
+		} catch (MessagingException | IOException e) {
 			logger.error("Failed to parse message.", e);
 			success = false;
 		}
 		try {
-			db.addMailEntry(user.getEmail(), from, sentDate, subject, file.getName(), format, table);
+			if(recipient_is_email1){
+				db.addMailEntry(user.getEmail(), from, sentDate, subject, file.getName(), format);
+			} else{
+				db.addMailEntry2(user.getEmail2(), from, sentDate, subject, file.getName(), format);
+			}
 		} catch (SQLException e) {
 			logger.error("Failed to log message to database.", e);
 			success = false;

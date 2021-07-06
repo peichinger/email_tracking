@@ -19,7 +19,7 @@ sites = cu.grab_mail_urls(MAIL_DIR, EMAIL_DOMAIN)
 TOTAL_NUM_SITES = len(sites)
 
 # Configure browser
-for i in xrange(NUM_BROWSERS):
+for i in range(NUM_BROWSERS):
     browser_params[i]['http_instrument'] = True
     browser_params[i]['cookie_instrument'] = True
     browser_params[i]['spoof_mailclient'] = True

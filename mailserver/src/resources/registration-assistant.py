@@ -31,8 +31,8 @@ while site != "q":
 
         if resp.status_code == 200:
             email = resp.text.split(";")
-            print("\n-> New mail address 1: " + str(email[1]))
-            print("-> New mail address 1: " + str(email[2]) + "\n")       
+            print("\n-> New mail address 1: " + str(email[0]))
+            print("-> New mail address 1: " + str(email[1]) + "\n")       
         else:
             print("\nERROR: An error occurred while generating the email address!\n")
 

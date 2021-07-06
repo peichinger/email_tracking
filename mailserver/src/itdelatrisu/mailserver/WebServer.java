@@ -85,12 +85,12 @@ public class WebServer {
 		if (site == null || url == null || category == null || category == "")
 			return badRequest(response);
 
-		logger.info("/register: {} - {} - {}", site, url, category);
+		logger.info("/REGISTER: {} - {} - {}", site, url, category);
 
 		// generate 2 email addresses
 		int retries = 5;  // in case generator picks a duplicate
 		while (retries-- > 0) {
-			String email = generator.generate(domain)
+			String email = generator.generate(domain);
 			
 			// PE: Email 1
 			email1.setLength(0);
@@ -106,9 +106,9 @@ public class WebServer {
 
 			try {
 				if (db.addMailUser(email1.toString(), email2.toString(), site, url, category)) {
-					email1.append(";")
+					email1.append(";");
 					email1.append(email2.toString());
-					logger.info("Created new user: {}", email1.toString());
+					logger.info("CREATED new user: {}", email1.toString());
 					return email1.toString();
 				}
 			} catch (SQLException e) {

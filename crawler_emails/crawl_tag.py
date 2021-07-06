@@ -5,8 +5,8 @@ import os
 
 NUM_BROWSERS = 15
 NUM_BATCH = 5000
-MAIL_DIR = os.path.expanduser('~/data/html/')  # Directory of HTML Files
-EMAIL_DOMAIN = 'lorveskel.me'
+MAIL_DIR = os.path.expanduser('/home/philipp/EmailTracking/testdata') #('~/data/html/')  # Directory of HTML Files
+EMAIL_DOMAIN = 'eichinger-edv.at' #'lorveskel.me' 
 
 manager_params, browser_params = TaskManager.load_default_params(NUM_BROWSERS)
 

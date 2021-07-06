@@ -55,11 +55,11 @@ CREATE TABLE IF NOT EXISTS `leaked_emails` (
 	`sender_address` VARCHAR(254) COMMENT 'sender email',
 	`recipient_id` INT(11) COMMENT 'recipient user id',
 	`encoding` VARCHAR(254) COMMENT 'encoding name (e.g. md5, sha1, crc32, mmh1)',
-	`url` VARCHAR(2048) COMMENT 'link url',
+	`url` VARCHAR(512) COMMENT 'link url',
 	`url_domain` VARCHAR(255) COMMENT 'link url domain',
 	`organization` VARCHAR(254) COMMENT 'organisation for link url domain',
 	`type` VARCHAR(254) COMMENT 'link type',
 	`is_redirect` BOOLEAN COMMENT 'redirection info',
 	`is_intentional` BOOLEAN COMMENT 'email leakage intention',
-	PRIMARY KEY (`recipient_id`, `url`)
+	PRIMARY KEY (`recipient_id`, `sender_address`, `url`)
 ) ENGINE=InnoDB;

@@ -146,17 +146,16 @@ public class MailDB {
 	}
 
 	/** Truncates the given URL if it is too long. */
-	private String truncateUrl(String url) {
-		if (url.length() <= MAX_URL_LENGTH)
+	private String truncateUrl(String url, int length) {
+		if (url.length() <= length)
 			return url;
 
 		String marker = "[TRUNCATED]";
-		return url.substring(0, MAX_URL_LENGTH - marker.length()) + marker;
+		return url.substring(0, length - marker.length()) + marker;
 	}
 
 	/** Adds a email entry to the database. */
 	public void addMailEntry(
-		String into_table,
 		String recipient,
 		String sender,
 		Date sentDate,
@@ -164,40 +163,59 @@ public class MailDB {
 		String filename,
 		String format
 	) throws SQLException {
-		if
-
 		try (
 			Connection connection = getConnection();
 			PreparedStatement stmt = connection.prepareStatement(
-				"INSERT INTO `?` VALUES(?, ?, ?, ?, ?, ?, ?)"
+				"INSERT INTO `inbox` (`recipient`, `sender`, `sent_date`, `subject`, `filename`, `format`) VALUES(?, ?, ?, ?, ?, ?)"
 			);
 			PreparedStatement stmtUpdate = connection.prepareStatement(
-				"UPDATE `users` SET `?` = `?` + 1 WHERE `?` = ?"
+				"UPDATE `users` SET `emails_received` = `emails_received` + 1 WHERE `email` = ?"
 			);
 		) {
-			stmt.setString(1, into_table);
-			stmt.setString(2, recipient);
-			stmt.setString(3, sender);
-			stmt.setTimestamp(4, sentDate == null ? null : new Timestamp(sentDate.getTime()));
-			stmt.setString(5, subject);
-			stmt.setString(6, filename);
-			stmt.setString(7, format);
-			stmt.setString(8, "");
+			stmt.setString(1, recipient);
+			stmt.setString(2, sender);
+			stmt.setTimestamp(3, sentDate == null ? null : new Timestamp(sentDate.getTime()));
+			stmt.setString(4, subject);
+			stmt.setString(5, filename);
+			stmt.setString(6, format);
 			stmt.executeUpdate();
 
-			if(into_table.equals("inbox")){
-				stmtUpdate.setString(1, "emails_received");
-				stmtUpdate.setString(2, "emails_received");
-				stmtUpdate.setString(3, "email");
-			}else{
-				stmtUpdate.setString(1, "emails_received2");
-				stmtUpdate.setString(2, "emails_received2");
-				stmtUpdate.setString(3, "email2");
-			}
-			stmtUpdate.setString(4, recipient);
+			stmtUpdate.setString(1, recipient);
 			stmtUpdate.executeUpdate();
 		}
 	}
+
+	/** PE: Adds a email entry to the database for a secondary email address. */
+	public void addMailEntry2(
+		String recipient,
+		String sender,
+		Date sentDate,
+		String subject,
+		String filename,
+		String format
+	) throws SQLException {
+		try (
+			Connection connection = getConnection();
+			PreparedStatement stmt = connection.prepareStatement(
+				"INSERT INTO `inbox2` (`recipient`, `sender`, `sent_date`, `subject`, `filename`, `format`) VALUES(?, ?, ?, ?, ?, ?)"
+			);
+			PreparedStatement stmtUpdate = connection.prepareStatement(
+				"UPDATE `users` SET `emails_received2` = `emails_received2` + 1 WHERE `email2` = ?"
+			);
+		) {
+			stmt.setString(1, recipient);
+			stmt.setString(2, sender);
+			stmt.setTimestamp(3, sentDate == null ? null : new Timestamp(sentDate.getTime()));
+			stmt.setString(4, subject);
+			stmt.setString(5, filename);
+			stmt.setString(6, format);
+			stmt.executeUpdate();
+
+			stmtUpdate.setString(1, recipient);
+			stmtUpdate.executeUpdate();
+		}
+	}
+
 
 	/** Adds a redirect chain to the database. */
 	// PE: Not in use
@@ -221,7 +239,7 @@ public class MailDB {
 				stmt.setString(1, senderDomain);
 				stmt.setString(2, senderAddress);
 				stmt.setInt(3, recipientId);
-				stmt.setString(4, truncateUrl(requestUrl));
+				stmt.setString(4, truncateUrl(requestUrl, MAX_URL_LENGTH));
 				String redirectDomain;
 				try {
 					redirectDomain = Utils.getDomainName(redirects.get(i).toString());
@@ -232,7 +250,7 @@ public class MailDB {
 				}
 				stmt.setString(5, redirectDomain);
 				stmt.setString(6, redirectDomain.isEmpty() ? null : orgs.getOrganizationForDomain(redirectDomain));
-				stmt.setString(7, truncateUrl(redirects.get(i).toString()));
+				stmt.setString(7, truncateUrl(redirects.get(i).toString(), MAX_URL_LENGTH));
 				stmt.setInt(8, i + 1);
 				stmt.executeUpdate();
 			}
@@ -263,7 +281,7 @@ public class MailDB {
 			stmt.setString(2, senderAddress);
 			stmt.setInt(3, recipientId);
 			stmt.setString(4, encoding);
-			stmt.setString(5, truncateUrl(url));
+			stmt.setString(5, truncateUrl(url, 512));
 			String urlDomain;
 			try {
 				urlDomain = Utils.getDomainName(url);
@@ -304,9 +322,9 @@ public class MailDB {
 			);
 		) {
 			stmt.setString(1, email);
-			stmt.setString(2, email2)
+			stmt.setString(2, email2);
 			stmt.setString(3, site);
-			stmt.setString(4, truncateUrl(url));
+			stmt.setString(4, truncateUrl(url, MAX_URL_LENGTH));
 			try {
 				stmt.setString(5, Utils.getDomainName(url));
 			} catch (Exception e) {

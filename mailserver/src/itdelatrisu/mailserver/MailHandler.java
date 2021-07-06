@@ -65,9 +65,9 @@ public class MailHandler {
 		}
 
 		// store email on disk
-		success = storage.store(from, user, data, recipient, recipient_is_email1);
+		success = storage.store(from, user, data, recipient_is_email1);
 		if(success){
-			logger.info("Mail saved successfully ({} -> {})", from, recipient);
+			logger.info("SAVED: Mail saved successfully ({} -> {})", from, recipient);
 		}
 
 		// PE: Analyze email (emails to secondary email addresses are not analyzed)

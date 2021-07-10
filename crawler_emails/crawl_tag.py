@@ -5,8 +5,8 @@ import os
 
 NUM_BROWSERS = 15
 NUM_BATCH = 5000
-MAIL_DIR = os.path.expanduser('~/data/html/')  # Directory of HTML Files
-EMAIL_DOMAIN = 'lorveskel.me'
+MAIL_DIR = os.path.expanduser('~/EmailTracking/testdata') #('~/data/html/')  # Directory of HTML Files
+EMAIL_DOMAIN = 'eichinger-edv.at' #'lorveskel.me'
 
 manager_params, browser_params = TaskManager.load_default_params(NUM_BROWSERS)
 
@@ -25,10 +25,10 @@ for i in range(NUM_BROWSERS):
     browser_params[i]['spoof_mailclient'] = True
     browser_params[i]['headless'] = True
 
-prefix = '2017-05-17_email_tracking_tag_crawl'
+prefix = '2021-07-11_email_tracking_tag_crawl'
 manager_params['database_name'] = prefix + '.sqlite'
-manager_params['data_directory'] = '~/Desktop/email_tracking/'
-manager_params['log_directory'] = '~/Desktop/email_tracking/'
+manager_params['data_directory'] = '~/EmailTracking/output/'
+manager_params['log_directory'] = '~/EmailTracking/output/'
 
 # Manage control files
 if not os.path.isdir(os.path.expanduser('~/.openwpm/')):

@@ -43,26 +43,37 @@ else:
     start_index = 0
     end_index = NUM_BATCH + 1
 
+print("INFO: Start Crawling!")
+
 # Start crawling
 manager = TaskManager.TaskManager(manager_params, browser_params)
 current_index = 0
+print("zeile 51")
 for i in range(start_index, end_index):
     current_index = i
+    print("zeile 54")
     if current_index >= TOTAL_NUM_SITES:
+        print("zeile 56")
         break
     try:
+        print("zeile 59")
         command_sequence = CommandSequence.CommandSequence(sites[i],
                                                            reset=True)
         command_sequence.get(sleep=10, timeout=60)
         command_sequence.get(sleep=10, timeout=60)
         manager.execute_command_sequence(command_sequence)
+        print("zeile 65")
         with open(os.path.expanduser('~/EmailTracking/.openwpm/current_site_index'),
                   'w') as f:
+            print("zeile 68")
             f.write(str(i))
     except CommandExecutionError:
+        print("zeile 71")
         with open(os.path.expanduser('~/EmailTracking/.openwpm/stop'), 'w') as f:
             f.write(str(1))
         break
+
+print("INFO: End Crawling!")
 
 # Shut down and clean up after batch
 manager.close()

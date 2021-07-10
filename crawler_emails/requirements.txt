@@ -1,8 +1,7 @@
-# changed by PE (versions added):
+# Info: File contains changes by Philipp Eichinger (@peichinger) (versions added)
 
-# Versionen September 2017 (Version von August)
 setuptools==36.3.0
-PyVirtualDisplay==0.2.1
+PyVirtualDisplay==0.2.5
 beautifulsoup4==4.6.0
 pyasn1==0.3.3
 pyOpenSSL==17.2.0

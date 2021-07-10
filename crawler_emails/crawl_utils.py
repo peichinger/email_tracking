@@ -1,3 +1,5 @@
+# Info: File contains changes by Philipp Eichinger (@peichinger)
+
 """ A collection of utilities for crawl scripts """
 from StringIO import StringIO
 import SimpleHTTPServer
@@ -23,7 +25,7 @@ def get_top_1m(location):
     location = os.path.expanduser(location)
     site_list = os.path.join(location, 'top-1m.csv')
     if not os.path.isfile(site_list):
-        print "%s does not exist, downloading a copy." % site_list
+        print("%s does not exist, downloading a copy." % site_list) # changed by PE
         resp = requests.get(EC2_LIST)
         with zipfile.ZipFile(StringIO(resp.content), 'r') as zpf:
             contents = zpf.read(zpf.infolist()[0])

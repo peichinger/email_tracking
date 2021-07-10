@@ -1,4 +1,6 @@
 #!/bin/bash
+# Info: File contains changes by Philipp Eichinger (@peichinger)
+
 set -e
 
 echo "Would you like to install Adobe Flash Player? (Only required for crawls with Flash) [y,N]"

@@ -31,12 +31,12 @@ manager_params['data_directory'] = '~/EmailTracking/output/' # changed by PE
 manager_params['log_directory'] = '~/EmailTracking/output/' # changed by PE
 
 # Manage control files
-if not os.path.isdir(os.path.expanduser('~/.openwpm/')):
-    os.mkdir(os.path.expanduser('~/.openwpm/'))
-if os.path.isfile(os.path.expanduser('~/.openwpm/reboot')):
-    os.remove(os.path.expanduser('~/.openwpm/reboot'))
-if os.path.isfile(os.path.expanduser('~/.openwpm/current_site_index')):
-    with open(os.path.expanduser('~/.openwpm/current_site_index'), 'r') as f:
+if not os.path.isdir(os.path.expanduser('~/EmailTracking/.openwpm/')): # changed by PE
+    os.mkdir(os.path.expanduser('~/EmailTracking/.openwpm/')) # changed by PE
+if os.path.isfile(os.path.expanduser('~/EmailTracking/.openwpm/reboot')): # changed by PE
+    os.remove(os.path.expanduser('~/EmailTracking/.openwpm/reboot')) # changed by PE
+if os.path.isfile(os.path.expanduser('~/EmailTracking/.openwpm/current_site_index')): # changed by PE
+    with open(os.path.expanduser('~/EmailTracking/.openwpm/current_site_index'), 'r') as f: # changed by PE
         start_index = int(f.read()) + 1
     end_index = start_index + NUM_BATCH
 else:
@@ -56,11 +56,11 @@ for i in range(start_index, end_index):
         command_sequence.get(sleep=10, timeout=60)
         command_sequence.get(sleep=10, timeout=60)
         manager.execute_command_sequence(command_sequence)
-        with open(os.path.expanduser('~/.openwpm/current_site_index'),
+        with open(os.path.expanduser('~/EmailTracking/.openwpm/current_site_index'),
                   'w') as f:
             f.write(str(i))
     except CommandExecutionError:
-        with open(os.path.expanduser('~/.openwpm/stop'), 'w') as f:
+        with open(os.path.expanduser('~/EmailTracking/.openwpm/stop'), 'w') as f:
             f.write(str(1))
         break
 
@@ -71,6 +71,6 @@ cu.clear_tmp_folder()
 
 # Remove index file if we are done
 if current_index >= TOTAL_NUM_SITES:
-    os.remove(os.path.expanduser('~/.openwpm/current_site_index'))
-    with open(os.path.expanduser('~/.openwpm/crawl_done'), 'w') as f:
+    os.remove(os.path.expanduser('~/EmailTracking/.openwpm/current_site_index'))
+    with open(os.path.expanduser('~/EmailTracking/.openwpm/crawl_done'), 'w') as f:
         f.write(str(1))

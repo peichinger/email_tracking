@@ -1,26 +1,27 @@
-setuptools
-pyvirtualdisplay
-beautifulsoup4
-pyasn1
-PyOPenSSL
-python-dateutil
-tld
-multiprocess
-dill
-pyamf
-psutil
-plyvel
-tblib
-tabulate
-pytest
-publicsuffix
+# Versionen September 2017 (Version von August)
+setuptools==36.3.0
+PyVirtualDisplay==0.2.1
+beautifulsoup4==4.6.0
+pyasn1==0.3.3
+pyOpenSSL==17.2.0
+python-dateutil==2.6.1
+tld==0.7.9
+multiprocess==0.70.5
+dill==0.2.7.1
+PyAMF==0.8.0
+psutil==5.2.2
+plyvel==0.9
+tblib==1.3.2
+tabulate==0.7.7
+pytest==3.2.1
+publicsuffix==1.1.0
 # Install specific mitmproxy version since we rely on some internal structure of
 # netlib and mitmproxy. New releases tend to break things and should be tested
 mitmproxy==0.13
 # Install specific version of selenium known to work well with the Firefox install we use
 selenium==2.53.0
-mmh3
+mmh3==2.4
 # IPython 6.0+ does not support python 2.7
-IPython>=5.0,<6.0
+ipython==5.4.1 #IPython>=5.0,<6.0
 # See https://github.com/ActiveState/appdirs/issues/89
-appdirs>=1.4.3
+appdirs==1.4.3 #appdirs>=1.4.3

@@ -9,7 +9,7 @@ print("Zeile 8")
 
 NUM_BROWSERS = 15
 NUM_BATCH = 5000
-MAIL_DIR = os.path.expanduser('~/EmailTracking/testdata') #('~/data/html/')  # Directory of HTML Files # changed by PE
+MAIL_DIR = os.path.expanduser('~/EmailTracking/data_html/') #('~/data/html/')  # Directory of HTML Files # changed by PE
 EMAIL_DOMAIN = 'eichinger-edv.at' #'lorveskel.me'  # changed by PE
 
 print("Zeile 15")

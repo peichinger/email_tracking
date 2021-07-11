@@ -96,17 +96,20 @@ for i in range(start_index, end_index):
 print("INFO: End Crawling!")
 
 # Shut down and clean up after batch
+print("Zeile 99")
 manager.close()
+print("Zeile 101")
 server.stop()
+print("Zeile 102")
 cu.clear_tmp_folder()
 
-print("Zeile 103")
+print("Zeile 106")
 
 # Remove index file if we are done
 if current_index >= TOTAL_NUM_SITES:
     os.remove(os.path.expanduser('~/EmailTracking/.openwpm/current_site_index'))
     with open(os.path.expanduser('~/EmailTracking/.openwpm/crawl_done'), 'w') as f:
         f.write(str(1))
-    print("Zeile 110")
+    print("Zeile 113")
 
-print("Zeile 112")
+print("Zeile 115")

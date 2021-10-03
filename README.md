@@ -8,7 +8,7 @@ Für meine Bachelorarbeit an der Fachhochschule St. Pölten (Österreich) führe
 
 Dieses Projekt enthält diverse Änderungen im Ordner „mailserver“. Ein Überblick über die Änderungen ist in der README.md Datei im Ordner „mailserver“ zu finden.
 
-Das Projekt hat Anfang Februar 2021 gestartet und ist noch nicht abgeschlossen (Stand Ende März 2021). 
+Das Projekt hat Anfang Februar 2021 gestartet und wurde im September 2021 abgeschlossen. 
 
 ## In English:
 
@@ -18,7 +18,7 @@ For my bachelor thesis at the University of Applied Sciences St. Pölten (Austri
 
 This project contains various changes in the folder "mailserver". An overview of the changes can be found in the README.md file in the "mailserver" folder.
 
-This project has started in February 2021 and has not yet been completed (status March 2021).
+The project started in early February 2021 and was completed in September 2021. 
 
 ## Contact details:
 * Student mail: is181036@fhstp.ac.at

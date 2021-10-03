@@ -1,7 +1,6 @@
 **Info**: Some files in this folder contains changes by Philipp Eichinger (@peichinger)
 
-## Change Overview:
-* ToDo
+Information about the changes to this project can be found in the comments in each file. Furthermore, a detailed description of the changes can be found in the bachelor thesis. If anyone is interested in this thesis, please do not hesitate to contact me.
 
 <br>
 

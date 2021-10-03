@@ -82,6 +82,7 @@ DELETE FROM inbox2 WHERE recipient = 'm2.annika.lang897@eichinger-edv.at';
 
 ## Export mail DB as SQLite DB:
 **Link Stackoverflow**: https://stackoverflow.com/questions/5164033/export-a-mysql-database-to-sqlite-database
+
 **Link GIT Project**: https://github.com/dumblob/mysql2sqlite
 ```bash
 cd /home/lea68/EmailTracking/git/mysql2sqlite

@@ -56,7 +56,7 @@ public class EmailAddressGenerator {
 	/** Generates an email address with the given domain name. */
 	public String generate(String domain) {
 		StringBuilder sb = new StringBuilder();
-//		sb.append(java.util.UUID.randomUUID().toString().replaceAll("-", ""));
+		//sb.append(java.util.UUID.randomUUID().toString().replaceAll("-", ""));
 		sb.append(random(firstNames));
 		sb.append(".");
 		sb.append(random(surnames));
